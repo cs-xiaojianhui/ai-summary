@@ -1,0 +1,32 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+
+# Configuration files
+config/
+*.config.json
+
+# Audio files
+audio/
+
+# Storage files
+storage/
+
+# Environment variables
+.env*
+!.env.example
+
+# Logs
+*.log
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# OS generated files
+Thumbs.db
