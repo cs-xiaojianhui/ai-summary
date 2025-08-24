@@ -86,6 +86,7 @@ npm run preview
 
 ### 1. 配置中心
 首次使用需要配置相关参数：
+注意要去掉 `llmConfig.json` 和 `ossConfig.json` 文件的 `exmaple` 后缀。
 
 **LLM配置**：
 1. 点击界面右上角的"LLM配置"按钮
