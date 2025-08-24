@@ -23,7 +23,7 @@ let ossClientInstance = null;
 let ossClientInitialized = false;
 
 // 配置OSS客户端（单例模式）
-function createOSSClient() {
+async function createOSSClient() {
   // 如果已经初始化过且客户端存在，直接返回
   if (ossClientInitialized && ossClientInstance) {
     console.log('使用已存在的OSS客户端实例');
@@ -31,12 +31,31 @@ function createOSSClient() {
   }
 
   // 从环境变量或配置文件中获取OSS配置
-  const ossConfig = {
+  let ossConfig = {
     region: process.env.OSS_REGION,
     accessKeyId: process.env.OSS_ACCESS_KEY_ID,
     accessKeySecret: process.env.OSS_ACCESS_KEY_SECRET,
     bucket: process.env.OSS_BUCKET
   };
+
+  // 如果环境变量不完整，尝试从配置文件中读取
+  if (!ossConfig.region || !ossConfig.accessKeyId || !ossConfig.accessKeySecret || !ossConfig.bucket) {
+    try {
+      const configPath = join(CONFIG_DIR, 'ossConfig.json');
+      const configFile = await fs.readFile(configPath, 'utf8');
+      const fileConfig = JSON.parse(configFile);
+      
+      // 映射配置文件中的字段名到代码中使用的字段名
+      ossConfig = {
+        region: fileConfig.region || ossConfig.region,
+        accessKeyId: fileConfig.access_id || fileConfig.accessKeyId || ossConfig.accessKeyId,
+        accessKeySecret: fileConfig.access_secret || fileConfig.accessKeySecret || ossConfig.accessKeySecret,
+        bucket: fileConfig.bucket || ossConfig.bucket
+      };
+    } catch (error) {
+      console.log('读取OSS配置文件失败:', error.message);
+    }
+  }
 
   console.log('OSS配置信息:', {
     region: ossConfig.region,
@@ -46,7 +65,7 @@ function createOSSClient() {
   });
 
   // 检查必要配置是否存在
-  if (!ossConfig.accessKeyId || !ossConfig.accessKeySecret || !ossConfig.bucket) {
+  if (!ossConfig.region || !ossConfig.accessKeyId || !ossConfig.accessKeySecret || !ossConfig.bucket) {
     console.log('OSS配置不完整，缺少必要参数');
     ossClientInitialized = true;
     ossClientInstance = null;
@@ -55,7 +74,12 @@ function createOSSClient() {
 
   console.log('正在创建OSS客户端...');
   try {
-    const client = new OSS(ossConfig);
+    const client = new OSS({
+      region: ossConfig.region,
+      accessKeyId: ossConfig.accessKeyId,
+      accessKeySecret: ossConfig.accessKeySecret,
+      bucket: ossConfig.bucket,
+    });
     console.log('OSS客户端创建成功');
     // 保存实例并标记为已初始化
     ossClientInstance = client;
@@ -97,7 +121,7 @@ const transcriptionUpload = multer({ storage: transcriptionStorage });
 
 // 上传文件到OSS
 async function uploadFileToOSS(localFilePath, ossFileName) {
-  const client = createOSSClient();
+  const client = await createOSSClient();
   
   if (!client) {
     throw new Error('OSS配置不完整，请检查环境变量配置');
