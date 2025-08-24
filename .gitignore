@@ -5,14 +5,14 @@ node_modules/
 dist/*
 
 # Configuration files
-config/*
+config/*.json
 *.config.json
 
 # Audio files
-audio/*
+audio/*.webm
 
 # Storage files
-storage/*
+storage/*.json
 
 # Environment variables
 .env*
