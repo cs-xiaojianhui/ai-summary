@@ -952,7 +952,7 @@ const CrawlerManager: React.FC = () => {
                     onClick={() => handleOpenLivePage(record.id)}
                     size="small"
                   >
-                    打开
+                    打开链接
                   </Button>
                   <Button 
                     type="text" 
@@ -962,7 +962,7 @@ const CrawlerManager: React.FC = () => {
                     disabled={record.status === 'processing' && !record.audioFile}
                     size="small"
                   >
-                    录制
+                    开始录制
                   </Button>
                 </>
               )}
@@ -974,7 +974,7 @@ const CrawlerManager: React.FC = () => {
                 disabled={!record.audioFile}
                 size="small"
               >
-                摘要
+                生成摘要
               </Button>
             </>
           )}
