@@ -1109,7 +1109,7 @@ const CrawlerManager: React.FC = () => {
                         a: ({node, ...props}) => <a style={{wordBreak: 'break-word', overflowWrap: 'break-word', wordWrap: 'break-word'}} {...props} />,
                       }}
                     >
-                      {record.summary.replace(/```|\n``$/g, '').trim()}
+                      {record.summary.replace(/```markdown|\n``$/g, '').trim()}
                     </ReactMarkdown>
                   </div>
                 </>
